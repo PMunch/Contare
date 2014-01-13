@@ -15,25 +15,51 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="158dp"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="0"
+        android:textSize="40sp" />
 
-    <ImageButton
-        android:id="@+id/imageButton2"
+    <ImageView
+        android:id="@+id/minus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/plus"
+        android:layout_alignParentBottom="true"
+        android:onClick="onClicked"
+        android:clickable="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/button_minus" />
+
+    <ImageView
+        android:id="@+id/plus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/minus"
+        android:layout_alignParentLeft="true"
+        android:onClick="onClicked"
+        android:clickable="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/button_plus" />
+
+    <TextView
+        android:id="@+id/plusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/plus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:text="+"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/minusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_launcher" />
-
-    <ImageButton
-        android:id="@+id/imageButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/imageButton2"
-        android:layout_alignLeft="@+id/imageButton2"
-        android:layout_alignRight="@+id/imageButton2"
-        android:src="@drawable/ic_launcher" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:text="-"
+        android:textColor="#ffffff"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
