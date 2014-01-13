@@ -6,7 +6,9 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
+    
+    <permission android:name="com.android.vending.CHECK_LICENSE"></permission>
 
     <application
         android:allowBackup="true"
