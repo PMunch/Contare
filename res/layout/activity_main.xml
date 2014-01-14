@@ -1,26 +1,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
-
-    <TextView
+    
+	<TextView
         android:id="@+id/number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="158dp"
+        android:layout_centerInParent="true"
+        android:translationY="-90sp"
         android:text="0"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        android:onClick="onClicked"
+        android:clickable="true"
+         />
 
     <ImageView
         android:id="@+id/minus"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/plus"
         android:layout_alignParentBottom="true"
@@ -31,7 +33,7 @@
 
     <ImageView
         android:id="@+id/plus"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/minus"
         android:layout_alignParentLeft="true"
