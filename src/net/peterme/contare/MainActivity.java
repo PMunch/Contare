@@ -30,7 +30,6 @@ public class MainActivity extends Activity {
 	private int num;
 	private EditText input;
 	private LicenseCheckerCallback mLicenseCheckerCallback;
-    private LicenseChecker mChecker;
 	
 	private String PREFS = "ContarePrefs";
 	private String TAG = "Contare";
