@@ -34,6 +34,7 @@ public class MainActivity extends Activity {
 	private EditText input;
 	private LicenseCheckerCallback mLicenseCheckerCallback;
 	private LicenseChecker mChecker;
+	private AlertDialog dialog;
 	
 	private String PREFS = "ContarePrefs";
 	private String TAG = "Contare";
@@ -71,9 +72,10 @@ public class MainActivity extends Activity {
             Log.d(TAG,"Error: "+Integer.toString(errorCode));
             new AlertDialog.Builder(MainActivity.this)
             .setTitle("Error")
-            .setMessage("Licensing error: "+Integer.toString(errorCode)+". Please report to developer.")
-            .setOnDismissListener(new DialogInterface.OnDismissListener() {
-				public void onDismiss(DialogInterface dialog) {
+            .setMessage("Licensing error: "+". Please report to developer.")
+            .setCancelable(false)
+            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
 					finish();
 				}
 			})
@@ -85,9 +87,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
 		number = (TextView) findViewById(R.id.number);
-//		((ImageView) findViewById(R.id.plus))
 		
 		settings = getSharedPreferences(PREFS,0);
 		editor = settings.edit();
@@ -102,6 +102,25 @@ public class MainActivity extends Activity {
 		});
 		input.setKeyListener(DigitsKeyListener.getInstance());
 		
+		dialog = new AlertDialog.Builder(MainActivity.this)
+	    .setTitle("Type new number")
+	    .setView(input)
+	    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dial, int whichButton) {
+	        	String numString = input.getText().toString();
+	        	if (numString.length()!=0){
+			            num=Integer.parseInt(numString);
+			            number.setText(numString);
+				}
+	            dial.cancel();
+	        }
+	    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dial, int whichButton) {
+	            dial.cancel();
+	        }
+	    }).create();
+    	dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		
 		final GestureDetector gestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener() {
 		    public boolean onDoubleTap(MotionEvent e) {
 		        num=0;
@@ -109,20 +128,6 @@ public class MainActivity extends Activity {
 		        return true;
 		    }
 		    public void onLongPress(MotionEvent e){
-		    	AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-			    .setTitle("Type new number")
-			    .setView(input)
-			    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			        public void onClick(DialogInterface dialog, int whichButton) {
-			            num=Integer.parseInt(input.getText().toString());
-			            number.setText(Integer.toString(num));
-			        }
-			    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			        public void onClick(DialogInterface dialog, int whichButton) {
-			            // Do nothing.
-			        }
-			    }).create();
-		    	dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 			    dialog.show();
 		    }
 		});
