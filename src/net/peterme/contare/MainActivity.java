@@ -5,15 +5,18 @@ import com.google.android.vending.licensing.LicenseChecker;
 import com.google.android.vending.licensing.LicenseCheckerCallback;
 import com.google.android.vending.licensing.ServerManagedPolicy;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.text.InputFilter;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,6 +33,7 @@ public class MainActivity extends Activity {
 	private int num;
 	private EditText input;
 	private LicenseCheckerCallback mLicenseCheckerCallback;
+	private LicenseChecker mChecker;
 	
 	private String PREFS = "ContarePrefs";
 	private String TAG = "Contare";
@@ -37,6 +41,45 @@ public class MainActivity extends Activity {
 	private static final byte[] SALT = new byte[] {
 		37, 27, -18, 109, 98, 123, -2, -39, -71, -51, 95, 104, -66, -63, 65, 67, -122, 51, -29, -37
     };
+	
+	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
+        public void allow(int policyReason) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            Log.d(TAG,"Allowed");
+        }
+
+        public void dontAllow(int policyReason) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            Log.d(TAG,"Denied");
+            Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(
+            		"http://market.android.com/details?id=" + getPackageName()));
+            startActivity(marketIntent);    
+            finish();
+        }
+
+        public void applicationError(int errorCode) {
+            if (isFinishing()) {
+                // Don't update UI if Activity is finishing.
+                return;
+            }
+            Log.d(TAG,"Error: "+Integer.toString(errorCode));
+            new AlertDialog.Builder(MainActivity.this)
+            .setTitle("Error")
+            .setMessage("Licensing error: "+Integer.toString(errorCode)+". Please report to developer.")
+            .setOnDismissListener(new DialogInterface.OnDismissListener() {
+				public void onDismiss(DialogInterface dialog) {
+					finish();
+				}
+			})
+            .create().show();
+        }
+    }
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +133,11 @@ public class MainActivity extends Activity {
 		});
 		
 		mLicenseCheckerCallback = new MyLicenseCheckerCallback();
-		new LicenseChecker(this, 
-				new ServerManagedPolicy(this,
-	            new AESObfuscator(SALT, getPackageName(), Secure.getString(getContentResolver(), Secure.ANDROID_ID))),BASE64_PUBLIC_KEY)
-				.checkAccess(mLicenseCheckerCallback);
+        new LicenseChecker(
+            this, new ServerManagedPolicy(this,
+                new AESObfuscator(SALT, getPackageName(), 
+                Secure.getString(getContentResolver(), Secure.ANDROID_ID))),
+            BASE64_PUBLIC_KEY).checkAccess(mLicenseCheckerCallback);
 	}
 	protected void onPause(){
 		super.onPause();
@@ -107,6 +151,12 @@ public class MainActivity extends Activity {
 		num = settings.getInt("number",0);
 		number.setText(Integer.toString(num));
 	}
+	protected void onDestroy() {
+        super.onDestroy();
+        if (mChecker!=null)
+        	mChecker.onDestroy();
+    }
+	
 	public void onClicked(View view){
 		if (view.getId()==R.id.minus){
 			num--;
@@ -115,29 +165,4 @@ public class MainActivity extends Activity {
 		}
 		number.setText(Integer.toString(num));
 	}
-	
-	private class MyLicenseCheckerCallback implements LicenseCheckerCallback {
-        public void allow(int policyReason) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-        }
-
-        public void dontAllow(int policyReason) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-            finish();
-        }
-
-        public void applicationError(int errorCode) {
-            if (isFinishing()) {
-                // Don't update UI if Activity is finishing.
-                return;
-            }
-            finish();
-        }
-    }
 }
